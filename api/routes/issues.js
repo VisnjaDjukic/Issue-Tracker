@@ -69,10 +69,8 @@ router.get('/:issueId', (req, res, next) => {
     const id = req.params.issueId;
     Issue.findById(id)
         .select('-__v')
-        // .populate('Comment')
         .exec()
         .then(doc => {
-            console.log(doc);
             if (doc) {
                 res.status(200).json({
                     issue: doc,
