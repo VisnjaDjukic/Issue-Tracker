@@ -1,0 +1,32 @@
+{
+  "name": "florencetech",
+  "version": "1.0.0",
+  "description": "Issue log application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "dev": "nodemon server.js --exec \"npm run lint && node\"",
+    "lint": "eslint server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VisnjaDjukic/FlorenceTech.git"
+  },
+  "author": "Visnja Djukic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VisnjaDjukic/FlorenceTech/issues"
+  },
+  "homepage": "https://github.com/VisnjaDjukic/FlorenceTech#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.13",
+    "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.3.0",
+    "nodemon": "^1.19.2"
+  }
+}
