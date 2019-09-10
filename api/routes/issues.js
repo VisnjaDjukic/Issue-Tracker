@@ -148,14 +148,12 @@ router.delete('/:issueId', (req, res, next) => {
 router.get('/:issueId/comments', (req, res, next) => {
     const id = req.params.issueId;
     Comment.find()
+        .where('issue')
+        .equals(id)
         .select('-__v')
         .exec()
         .then(docs => {
-            res.status(200).json({
-                comments: docs.filter(doc => {
-                    return doc.issue == id;
-                })
-            });
+            res.status(200).json(docs);
         })
         .catch(err => {
             res.status(500).json({
