@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Issue = require('../models/issue');
-const Comment = require('../models/comment');
+const { Issue, Comment } = require('../models/issue');
 
-// GET / - list all created issues
+// GET / - List all created issues
 router.get('/', (req, res, next) => {
     Issue.find()
         .select('-__v')
@@ -17,11 +16,12 @@ router.get('/', (req, res, next) => {
                     return {
                         description: doc.description,
                         status: doc.status,
-                        _id: docs._id,
+                        _id: doc._id,
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/issues/' + doc._id
-                        }
+                        },
+                        comments: doc.comments
                     };
                 })
             };
@@ -142,16 +142,24 @@ router.delete('/:issueId', (req, res, next) => {
         });
 });
 
-// GET / - list all created comments
+// GET /:issueId/comments - List all created comments
 router.get('/:issueId/comments', (req, res, next) => {
     const id = req.params.issueId;
-    Comment.find()
-        .where('issue')
-        .equals(id)
-        .select('-__v')
+    Issue.findById(id)
+        .select('comments')
         .exec()
-        .then(docs => {
-            res.status(200).json(docs);
+        .then(doc => {
+            if (doc) {
+                res.status(200).json({
+                    issueId: id,
+                    count: doc.comments.length,
+                    comments: doc.comments
+                });
+            } else {
+                res.status(404).json({
+                    message: 'No valid entry found for provided ID'
+                });
+            }
         })
         .catch(err => {
             res.status(500).json({
@@ -160,19 +168,25 @@ router.get('/:issueId/comments', (req, res, next) => {
         });
 });
 
-// POST / - create new comment
-router.post('/:issueId/comments', (req, res, next) => {
+// UPDATE /:issueId/comments - Create new comment
+router.patch('/:issueId/comments', (req, res, next) => {
+    const id = req.params.issueId;
     const comment = new Comment({
         _id: mongoose.Types.ObjectId(),
-        issue: req.params.issueId,
         content: req.body.content
     });
-    comment
-        .save()
+    Issue.findOneAndUpdate(
+        { _id: id },
+        { $push: { comments: comment } },
+        { new: true }
+    )
+        .exec()
         .then(result => {
             res.status(201).json({
                 message: 'Comment is posted!',
-                createdComment: result
+                issueId: result._id,
+                postedComment: result.comments[result.comments.length - 1],
+                allComments: result.comments
             });
         })
         .catch(err => {
