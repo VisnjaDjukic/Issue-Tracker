@@ -103,11 +103,10 @@ router.delete('/:issueId', (req, res, next) => {
         });
 });
 
-// GET /:issueId/comments - List all created comments
+// GET /:issueId/comments - List all created comments for provided issue
 router.get('/:issueId/comments', (req, res, next) => {
     const id = req.params.issueId;
     Issue.findById(id)
-        .select('comments')
         .exec()
         .then(issue => {
             if (issue) {
@@ -129,6 +128,7 @@ router.get('/:issueId/comments', (req, res, next) => {
         });
 });
 
+// POST /:issueId/comments - Create new comment for provided issue
 router.post('/:issueId/comments', (req, res, next) => {
     const id = req.params.issueId;
     const comment = new Comment({
