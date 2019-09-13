@@ -7,25 +7,12 @@ const { Issue, Comment } = require('../models/issue');
 // GET / - List all created issues
 router.get('/', (req, res, next) => {
     Issue.find()
-        .select('-__v')
         .exec()
-        .then(docs => {
-            const response = {
-                count: docs.length,
-                issues: docs.map(doc => {
-                    return {
-                        description: doc.description,
-                        status: doc.status,
-                        _id: doc._id,
-                        request: {
-                            type: 'GET',
-                            url: 'http://localhost:3000/issues/' + doc._id
-                        },
-                        comments: doc.comments
-                    };
-                })
-            };
-            res.status(200).json(response);
+        .then(issues => {
+            res.status(200).json({
+                count: issues.length,
+                issues: issues
+            });
         })
         .catch(err => {
             res.status(500).json({
@@ -43,18 +30,10 @@ router.post('/', (req, res, next) => {
     });
     issue
         .save()
-        .then(result => {
+        .then(issue => {
             res.status(201).json({
                 message: 'Issue created successfully',
-                createdIssue: {
-                    description: result.description,
-                    status: result.status,
-                    _id: result._id,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/issues/' + result._id
-                    }
-                }
+                createdIssue: issue
             });
         })
         .catch(err => {
@@ -68,20 +47,13 @@ router.post('/', (req, res, next) => {
 router.get('/:issueId', (req, res, next) => {
     const id = req.params.issueId;
     Issue.findById(id)
-        .select('-__v')
         .exec()
-        .then(doc => {
-            if (doc) {
-                res.status(200).json({
-                    issue: doc,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/issues'
-                    }
-                });
+        .then(issue => {
+            if (issue) {
+                res.status(200).json(issue);
             } else {
                 res.status(404).json({
-                    message: 'No valid entry found for provided ID'
+                    message: 'No valid issue found for provided Id'
                 });
             }
         })
@@ -104,10 +76,7 @@ router.patch('/:issueId', (req, res, next) => {
         .then(() => {
             res.status(200).json({
                 message: 'Issue is updated',
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/issues/' + id
-                }
+                resourceUrl: process.env.SERVER_URL + '/issues/' + id
             });
         })
         .catch(err => {
@@ -124,15 +93,7 @@ router.delete('/:issueId', (req, res, next) => {
         .exec()
         .then(() => {
             res.status(200).json({
-                message: 'Issue is deleted!',
-                request: {
-                    type: 'POST',
-                    url: 'http://localhost:3000/issues',
-                    body: {
-                        description: 'String',
-                        status: 'Boolean'
-                    }
-                }
+                message: 'Issue is deleted!'
             });
         })
         .catch(err => {
@@ -148,12 +109,12 @@ router.get('/:issueId/comments', (req, res, next) => {
     Issue.findById(id)
         .select('comments')
         .exec()
-        .then(doc => {
-            if (doc) {
+        .then(issue => {
+            if (issue) {
                 res.status(200).json({
                     issueId: id,
-                    count: doc.comments.length,
-                    comments: doc.comments
+                    count: issue.comments.length,
+                    comments: issue.comments
                 });
             } else {
                 res.status(404).json({
@@ -168,25 +129,19 @@ router.get('/:issueId/comments', (req, res, next) => {
         });
 });
 
-// UPDATE /:issueId/comments - Create new comment
-router.patch('/:issueId/comments', (req, res, next) => {
+router.post('/:issueId/comments', (req, res, next) => {
     const id = req.params.issueId;
     const comment = new Comment({
         _id: mongoose.Types.ObjectId(),
         content: req.body.content
     });
-    Issue.findOneAndUpdate(
-        { _id: id },
-        { $push: { comments: comment } },
-        { new: true }
-    )
-        .exec()
-        .then(result => {
+    Issue.findOne({ _id: id })
+        .then(issue => {
+            issue.comments.push(comment);
+            issue.save();
             res.status(201).json({
                 message: 'Comment is posted!',
-                issueId: result._id,
-                postedComment: result.comments[result.comments.length - 1],
-                allComments: result.comments
+                postedComment: issue.comments[issue.comments.length - 1]
             });
         })
         .catch(err => {
