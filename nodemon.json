@@ -1,6 +1,6 @@
 {
     "env": {
         "MONGO_ATLAS_PW": "IssueApp",
-        "SERVER_URL": "http://localhost:3000"
+        "SERVER_URL": "http://localhost:3000/"
     }
 }
