@@ -12,7 +12,7 @@ const fileSchema = new Schema({
 
 const issueSchema = new Schema(
     {
-        _id: mongoose.Schema.Types.ObjectId,
+        _id:  mongoose.Schema.Types.ObjectId,
         description: { type: String, required: true },
         status: { type: Boolean, default: false },
         issueFiles: [fileSchema],

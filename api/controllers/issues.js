@@ -3,13 +3,13 @@ const path = require('path');
 
 const Issue = require('../models/issue');
 
-exports.issues_get_all = (req, res, next) => {
+exports.issuesGetAll = (req, res, next) => {
     Issue.find()
         .exec()
         .then(issues => {
             res.status(200).json({
                 count: issues.length,
-                issues: issues
+                issues
             });
         })
         .catch(err => {
@@ -19,13 +19,12 @@ exports.issues_get_all = (req, res, next) => {
         });
 };
 
-exports.issues_create_issue = (req, res, next) => {
+exports.issuesCreateIssue = (req, res, next) => {
     const issue = new Issue({
         _id: new mongoose.Types.ObjectId(),
         description: req.body.description,
         status: req.body.status
     });
-    console.log(issue)
     issue
         .save()
         .then(issue => {
@@ -41,7 +40,7 @@ exports.issues_create_issue = (req, res, next) => {
         });
 };
 
-exports.issues_get_issue = (req, res, next) => {
+exports.issuesGetIssue = (req, res, next) => {
     const id = req.params.issueId;
     Issue.findById(id)
         .exec()
@@ -61,7 +60,7 @@ exports.issues_get_issue = (req, res, next) => {
         });
 };
 
-exports.issues_update_issue = (req, res, next) => {
+exports.issuesUpdateIssue = (req, res, next) => {
     const id = req.params.issueId;
     const updateOps = {};
     for (const ops of req.body) {
@@ -82,7 +81,7 @@ exports.issues_update_issue = (req, res, next) => {
         });
 };
 
-exports.issues_delete_issue = (req, res, next) => {
+exports.issuesDeleteIssue = (req, res, next) => {
     const id = req.params.issueId;
     Issue.deleteOne({ _id: id })
         .exec()
@@ -98,7 +97,7 @@ exports.issues_delete_issue = (req, res, next) => {
         });
 };
 
-exports.issues_get_comments = (req, res, next) => {
+exports.issuesGetComments = (req, res, next) => {
     const id = req.params.issueId;
     Issue.findById(id)
         .exec()
@@ -122,13 +121,11 @@ exports.issues_get_comments = (req, res, next) => {
         });
 };
 
-exports.issues_create_comment = (req, res, next) => {
+exports.issuesCreateComment = (req, res, next) => {
     const id = req.params.issueId;
-    console.log(req.body.content)
     Issue.findOne({ _id: id })
         .then(issue => {
             issue.comments.push({ content: req.body.content });
-            console.log(req.body.content);
             issue.save();
             res.status(201).json({
                 message: 'Comment is posted!',
@@ -142,8 +139,7 @@ exports.issues_create_comment = (req, res, next) => {
         });
 };
 
-exports.issues_upload_file = (req, res, next) => {
-    console.log(req.file);
+exports.issuesUploadFile = (req, res, next) => {
     const id = req.params.issueId;
     Issue.findOne({ _id: id })
         .then(issue => {
@@ -164,7 +160,7 @@ exports.issues_upload_file = (req, res, next) => {
         });
 };
 
-exports.issues_download_file = (req, res, next) => {
+exports.issuesDownloadFile = (req, res, next) => {
     const file = path.join(__dirname, '/../../uploads/') + req.body.name;
     res.download(file);
 };
