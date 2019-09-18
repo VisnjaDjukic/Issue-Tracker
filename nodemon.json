@@ -1,0 +1,7 @@
+{
+    "env": {
+        "MONGO_ATLAS_PW": "IssueApp",
+        "SERVER_URL": "http://localhost:3000/",
+        "FILE_MAX_SIZE": "1024 * 1024 * 5"
+    }
+}
