@@ -2,15 +2,16 @@ const mongoose = require('mongoose');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const Issue = require('../api/models/issue');
+const Issue = require('../../api/models/issue');
 
 const should = chai.should();
 chai.use(chaiHttp);
 
 describe('create new issue model', () => {
-    after(() => {
-        mongoose.connection.dropDatabase();
-        console.log('CLEAR DB!!!');
+    after(done => {
+        mongoose.connection.dropDatabase(() => {
+            done();
+        });
     });
     it('should transform data from model issue', done => {
         const newIssueModel = new Issue({
@@ -32,8 +33,8 @@ describe('create new issue model', () => {
             transformedData.resourceUrl.should.equal(
                 process.env.SERVER_URL + 'issues/' + transformedData.id
             );
+            done();
         });
-        done();
     });
     it('should not create issue if property description is empty', done => {
         const newIssueModel = new Issue({
@@ -46,8 +47,7 @@ describe('create new issue model', () => {
             err.should.have.keys('errors', 'name', 'message', '_message');
             err.name.should.equal('ValidationError');
             err._message.should.equal('Issue validation failed');
+            done();
         });
-        done();
     });
-    
 });

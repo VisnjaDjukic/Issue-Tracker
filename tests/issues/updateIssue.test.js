@@ -1,45 +1,51 @@
 const mongoose = require('mongoose');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-let app = require('../app');
+let app = require('../../app');
 
-const Issue = require('../api/models/issue');
+const Issue = require('../../api/models/issue');
 
 const should = chai.should();
 chai.use(chaiHttp);
 
-describe('delete single issue', () => {
-    describe('URL parameter is valid id', () => {
+describe('update single issue', () => {
+    describe('request body has valid parameters and valid id', () => {
         let issue;
-        before(() => {
+        before(done => {
             issue = new Issue({
                 _id: new mongoose.Types.ObjectId(),
                 description: 'Something',
                 status: false
             });
-            issue.save();
+            issue.save(() => {
+                done();
+            });
         });
-        after(() => {
-            mongoose.connection.dropDatabase();
+        after(done => {
+            mongoose.connection.dropDatabase(() => {
+                done();
+            });
         });
-        it('should delete issue by the given id', done => {
+        it('should update issue', done => {
             chai.request(app)
-                .delete('/issues/' + issue._id)
+                .patch('/issues/' + issue._id)
+                .send([{ propName: 'description', value: 'Something new' }])
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.should.be.json;
                     res.body.should.be.a('object');
                     res.body.should.have.property('message');
-                    res.body.message.should.equal('Issue is deleted!');
+                    res.body.message.should.equal('Issue is updated');
                     done();
                 });
         });
     });
-    describe('URL parameter is not valid id', () => {
-        it('should return error by the given id', done => {
+    describe('request body has not valid id', () => {
+        it('should return error', done => {
             const id = undefined;
             chai.request(app)
-                .delete('/issues/' + id)
+                .patch('/issues/' + id)
+                .send([{ propName: 'description', value: 'Something new' }])
                 .end((err, res) => {
                     res.should.have.status(500);
                     res.should.be.json;

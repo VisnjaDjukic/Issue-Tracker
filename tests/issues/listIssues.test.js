@@ -1,28 +1,33 @@
 const mongoose = require('mongoose');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-let app = require('../app');
+let app = require('../../app');
 
-const Issue = require('../api/models/issue');
+const Issue = require('../../api/models/issue');
 
 const should = chai.should();
 chai.use(chaiHttp);
 
 describe('list all issues', () => {
     describe('there are 10 issues in db', () => {
-        before(() => {
+        before(done => {
+            const issueArray = [];
             for (let i = 0; i < 10; i++) {
                 const issue = new Issue({
                     _id: new mongoose.Types.ObjectId(),
                     description: 'Something' + i,
                     status: false
                 });
-                issue.save();
+                issueArray.push(issue);
             }
+            Issue.insertMany(issueArray, () => {
+                done();
+            });
         });
-        after(() => {
-            mongoose.connection.dropDatabase();
-            console.log('CLEAR DB!');
+        after(done => {
+            mongoose.connection.dropDatabase(() => {
+                done();
+            });
         });
         it('should list all issues in db', done => {
             chai.request(app)
@@ -34,6 +39,7 @@ describe('list all issues', () => {
                     res.body.should.have.keys('count', 'issues');
                     res.body.issues.should.be.a('array');
                     res.body.count.should.equal(10);
+                    res.body.issues.should.lengthOf(10);
                     done();
                 });
         });

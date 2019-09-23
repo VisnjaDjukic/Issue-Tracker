@@ -1,15 +1,17 @@
 const mongoose = require('mongoose');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-let app = require('../app');
+let app = require('../../app');
 
 const should = chai.should();
 chai.use(chaiHttp);
 
 describe('create new issue', () => {
     describe('request body has valid parameters', () => {
-        after(() => {
-            mongoose.connection.dropDatabase();
+        after(done => {
+            mongoose.connection.dropDatabase(() => {
+                done();
+            });
         });
         it('should add a single issue', done => {
             chai.request(app)
