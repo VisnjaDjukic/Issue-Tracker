@@ -1,7 +1,8 @@
 {
     "env": {
         "es6": true,
-        "node": true
+        "node": true,
+        "mocha":true
       },
     "parserOptions": {
         "ecmaVersion": 6,
@@ -55,9 +56,14 @@
         "no-unsafe-finally": 2,
         "no-unsafe-negation": 2,
         "no-unused-labels": 2,
-        "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
         "no-useless-catch": 2,
         "no-useless-escape": 2,
+        "no-unused-vars": [
+            "error",
+            {
+              "varsIgnorePattern": "should|expect",
+               "argsIgnorePattern": "next" 
+               } ],
         "no-with": 2,
         "require-atomic-updates": 2,
         "require-yield": 2,

@@ -4,13 +4,17 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+require('dotenv').config({path:__dirname+'./.env'});
+
 const issueRoutes = require('./api/routes/issues');
 
 // Connect to the database
 mongoose.connect(
-    'mongodb+srv://IssueApp:' +
+    'mongodb+srv://' +
+        process.env.MONGO_ATLAS_USERNAME +
+        ':' +
         process.env.MONGO_ATLAS_PW +
-        '@cluster0-kmklw.mongodb.net/test?retryWrites=true&w=majority',
+        process.env.MONGO_ATLAS_PATH,
     {
         useNewUrlParser: true
     }

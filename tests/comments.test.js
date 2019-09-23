@@ -8,13 +8,16 @@ const Issue = require('../api/models/issue');
 const should = chai.should();
 chai.use(chaiHttp);
 
-describe('Comments', () => {
-    it('should create comment for the given issue', done => {
-        var issue = new Issue({
+describe('comments', () => {
+    let issue;
+    before(() => {
+        issue = new Issue({
             _id: new mongoose.Types.ObjectId(),
             description: 'Something',
             status: false
         });
+    });
+    it('should create comment for the given issue', done => {
         chai.request(app)
             .post('/issues/' + issue._id + '/comments')
             .send({ content: 'first comment' }, issue.save())
@@ -32,4 +35,3 @@ describe('Comments', () => {
             });
     });
 });
-
