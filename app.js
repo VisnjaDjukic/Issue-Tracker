@@ -3,8 +3,10 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
-require('dotenv').config({path:__dirname+'./.env'});
+require('dotenv').config({ path: __dirname + './.env' });
 
 const issueRoutes = require('./api/routes/issues');
 
@@ -40,6 +42,9 @@ app.use((req, res, next) => {
     }
     next();
 });
+
+//Route which should handle api documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Route which should handle requests
 app.use('/issues', issueRoutes);
