@@ -1,0 +1,29 @@
+<mat-spinner *ngIf="isLoading"></mat-spinner>
+<mat-accordion multi="true" *ngIf="issues.length > 0 && !isLoading">
+  <mat-card>
+    <p>Total number: {{ issues.length }}</p>
+    <p>
+      Pending issues: <span class="pendingIssues">{{ pendingIssues }}</span>
+    </p>
+    <p>
+      Closed issues:
+      <span class="closedIssues">{{ issues.length - pendingIssues }}</span>
+    </p>
+  </mat-card>
+  <mat-expansion-panel *ngFor="let issue of issues">
+    <mat-expansion-panel-header [ngClass]="{ closed: issue.status }">
+      {{ issue.description }}
+    </mat-expansion-panel-header>
+    <mat-icon matBadge="{{ issue.comments.length }}">message</mat-icon>
+    <mat-icon matBadge="{{ issue.issueFiles.length }}">attachment</mat-icon>
+    <mat-action-row>
+      <a color="primary" mat-button [routerLink]="['/edit', issue.id]">EDIT</a>
+      <button color="warn" mat-button (click)="onDelete(issue.id)">
+        DELETE
+      </button>
+    </mat-action-row>
+  </mat-expansion-panel>
+</mat-accordion>
+<p class="info-text mat-body-3" *ngIf="issues.length <= 0 && !isLoading">
+  No issues added yet!
+</p>

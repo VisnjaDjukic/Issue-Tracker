@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const Issue = require('../../api/models/issue');
+const Issue = require('../../backend/models/issue');
 
 const should = chai.should();
 chai.use(chaiHttp);

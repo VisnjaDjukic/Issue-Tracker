@@ -2,8 +2,8 @@
     "env": {
         "es6": true,
         "node": true,
-        "mocha":true
-      },
+        "mocha": true
+    },
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module"
@@ -61,9 +61,10 @@
         "no-unused-vars": [
             "error",
             {
-              "varsIgnorePattern": "should|expect",
-               "argsIgnorePattern": "next" 
-               } ],
+                "varsIgnorePattern": "should|expect",
+                "argsIgnorePattern": "next"
+            }
+        ],
         "no-with": 2,
         "require-atomic-updates": 2,
         "require-yield": 2,

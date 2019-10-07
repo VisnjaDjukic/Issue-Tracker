@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const app = require('../../app');
+const app = require('../../backend/app');
 
-const Issue = require('../../api/models/issue');
+const Issue = require('../../backend/models/issue');
 
 const should = chai.should();
 chai.use(chaiHttp);

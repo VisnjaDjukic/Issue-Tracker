@@ -22,15 +22,14 @@ const issueSchema = new Schema(
         toJSON: {
             versionKey: false,
             transform: (doc, ret) => {
-            return {
-                id: ret._id,
-                status: ret.status,
-                description: ret.description,
-                resourceUrl: process.env.SERVER_URL + 'issues/' + ret._id,
-                issueFiles: ret.issueFiles,
-                comments: ret.comments
-    
-                    }
+                return {
+                    id: ret._id,
+                    status: ret.status,
+                    description: ret.description,
+                    resourceUrl: process.env.SERVER_URL + 'issues/' + ret._id,
+                    issueFiles: ret.issueFiles,
+                    comments: ret.comments
+                };
             }
         }
     }

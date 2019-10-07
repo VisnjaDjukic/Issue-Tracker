@@ -1,0 +1,74 @@
+<mat-card>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form
+    (submit)="onSaveIssue(issueForm)"
+    #issueForm="ngForm"
+    *ngIf="!isLoading"
+  >
+    <mat-form-field>
+      <textarea
+        matInput
+        rows="6"
+        [ngModel]="issue?.description"
+        name="description"
+        required
+        minlength="5"
+        placeholder="Please describe your issue here"
+        #description="ngModel"
+      ></textarea>
+      <mat-error *ngIf="description.invalid"
+        >Please enter issue description</mat-error
+      >
+    </mat-form-field>
+    <mat-checkbox
+      *ngIf="mode === 'edit'"
+      color="primary"
+      [(ngModel)]="checked"
+      name="checkbox"
+      >Closed Issue</mat-checkbox
+    >
+    <button mat-raised-button color="primary" type="submit">
+      Save Issue
+    </button>
+  </form>
+</mat-card>
+<mat-card *ngIf="mode === 'edit'">
+  <input type="file" (change)="onProgress($event)" />
+  <button mat-raised-button color="accent" (click)="onUpload()">
+    Upload
+  </button>
+  <mat-list *ngFor="let item of issue?.issueFiles">
+    <mat-list-item
+      ><a href="javascript:void(0)" (click)="onDownload(item)">
+        {{ item.name }}
+      </a>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  </mat-list>
+</mat-card>
+<mat-card *ngIf="mode === 'edit'">
+  <form (submit)="onSaveComment(commentForm)" #commentForm="ngForm">
+    <mat-form-field>
+      <textarea
+        matInput
+        name="content"
+        required
+        placeholder="Add your comment here"
+        ngModel
+        #content="ngModel"
+      ></textarea>
+      <mat-error *ngIf="content.invalid"
+        >Please enter comment content</mat-error
+      >
+    </mat-form-field>
+    <button mat-raised-button color="accent" type="submit">
+      Add Comment
+    </button>
+  </form>
+  <mat-list>
+    <mat-list-item *ngFor="let comment of issue?.comments">
+      <p>{{ comment?.content }}</p>
+      <mat-divider></mat-divider>
+    </mat-list-item>
+  </mat-list>
+</mat-card>
