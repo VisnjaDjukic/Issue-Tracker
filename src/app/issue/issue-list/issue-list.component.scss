@@ -1,0 +1,28 @@
+:host {
+  margin: 15px auto;
+  display: block;
+}
+.info-text {
+  text-align: center;
+}
+mat-spinner {
+  margin: auto;
+}
+mat-expansion-panel-header {
+  background-color: rosybrown;
+}
+.closed {
+  background-color: lightgreen;
+}
+mat-card {
+  margin-bottom: 25px;
+  .pendingIssues {
+    color: rosybrown;
+  }
+  .closedIssues {
+    color: lightgreen;
+  }
+}
+mat-icon {
+  margin-right: 25px;
+}

@@ -1,0 +1,365 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a simple RESTful API for creating and listing issues. Issues can be updated and deleted. Comments and documents can be added for each issue separately.",
+    "version": "1.0.0",
+    "title": "Issue Log"
+  },
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/issues": {
+      "post": {
+        "tags": [
+          "issues"
+        ],
+        "summary": "Create new issue",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Add new issue",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Issue"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "issues"
+        ],
+        "summary": "Get all issues",
+        "description": "Returns all issues",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        }
+      }
+    },
+    "/issues/{issueId}": {
+      "get": {
+        "tags": [
+          "issues"
+        ],
+        "summary": "Find issue by id",
+        "description": "Returns a single issue",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "issueId",
+            "in": "path",
+            "description": "Id of issue to return",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Issue"
+            }
+          },
+          "404": {
+            "description": "Issue not found for provided id"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "issues"
+        ],
+        "summary": "Update an existing issue",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "issueId",
+            "in": "path",
+            "description": "Id of issue to update",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "Updated description of issue",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "status",
+            "in": "formData",
+            "description": "Updated status of issue",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Issue"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "issues"
+        ],
+        "summary": "Delete single issue",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "issueId",
+            "in": "path",
+            "description": "Id of issue to delete",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Issue"
+            }
+          }
+        }
+      }
+    },
+    "/issues/{issueId}/comments": {
+      "post": {
+        "tags": [
+          "comments"
+        ],
+        "summary": "Post new comment",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "issueId",
+            "in": "path",
+            "description": "Id of issue where comment needs to be posted",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Add new comment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "comments"
+        ],
+        "summary": "Get all comments",
+        "description": "Return all comments for provided issue id",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "issueId",
+            "in": "path",
+            "description": "Id of issue where comment needs to be posted",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Comment"
+              }
+            }
+          },
+          "404": {
+            "description": "Comments not found for provided id"
+          }
+        }
+      }
+    },
+    "/issues/{issueId}/uploads": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Upload a file",
+        "description": "",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "issueId",
+            "in": "path",
+            "description": "Id of issue where file needs to be uploaded",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "File to upload",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        }
+      }
+    },
+    "/issues/{issueId}/downloads": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Download a file",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "issueId",
+            "in": "path",
+            "description": "Id of issue where file needs to be downloaded",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Name of the file",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Issue": {
+      "type": "object",
+      "required": [
+        "description"
+      ],
+      "properties": {
+        "_id": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "status": {
+          "type": "boolean",
+          "default": false
+        },
+        "issueFiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/File"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Comment"
+          }
+        }
+      }
+    },
+    "File": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "Comment": {
+      "type": "object",
+      "required": [
+        "content"
+      ],
+      "properties": {
+        "content": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
