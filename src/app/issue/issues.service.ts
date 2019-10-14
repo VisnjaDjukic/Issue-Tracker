@@ -114,18 +114,12 @@ export class IssuesService {
         value: status
       }
     ];
-    // const issue: Issue = { id, description, status };
-    // const issue: Issue = { id, description, status };
-    // for (const ops of Object.entries(arguments)) {
-    //   updateIssue[ops.propName] = ops.value;
-    // }
+    
     this.http
       .patch(environment.apiUrl + id, updateIssue)
       .subscribe(response => {
         this.router.navigate(['/']);
-        // const updatedIssues = [...this.issues];
-        // const oldIssueIndex = updatedIssues.findIndex(i => i.id === id);
-        // updatedIssues[oldIssueIndex] = updatedIssues;
+       console.log(response);
       });
   }
 
