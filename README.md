@@ -1,6 +1,8 @@
 # Issue Tracker
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.5.
+This is a simple SPA for creating and listing issues.
+Issues can be updated and deleted.
+Comments and documents can be added for each issue separately.
 
 ## Development server
 
